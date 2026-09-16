@@ -18,6 +18,7 @@
       overflow-x: hidden;
       margin: 0;
       padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
     }
 
     /* Top Navigation bar */
@@ -295,7 +296,7 @@
       box-shadow: -4px 0 20px rgba(0,0,0,0.15);
     }
     .cart-drawer-sheet.open {
-      transform: translateX(0);
+      transform: translateX(0) !important;
     }
     .drawer-header {
       padding: 16px;
@@ -473,7 +474,7 @@
       }
 
       .nav-links-top {
-        display: none; /* Collapses text links into space-saving search */
+        display: none;
       }
 
       .search-box-center {
@@ -514,10 +515,9 @@
       }
 
       .carousel-arrow {
-        display: none; /* Use natural touch swipe on touchscreens */
+        display: none;
       }
 
-      /* Stack sidebars horizontally for mobile */
       .store-container {
         flex-direction: column;
         padding: 0 12px;
@@ -555,7 +555,6 @@
         border-color: #000000;
       }
 
-      /* 2-column Product Grid on Mobile */
       .products-grid {
         grid-template-columns: repeat(2, minmax(0, 1fr));
         gap: 8px;
@@ -581,7 +580,7 @@
     <div class="header-left">
       <a href="index.html" class="brand-wrapper">
         <div class="brand-icon-box">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="black">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="white">
             <polygon points="12 2 22 22 2 22"></polygon>
           </svg>
         </div>
@@ -605,7 +604,7 @@
 
     <div class="header-right">
       <div id="userAuthBox"></div>
-      <button class="cart-toggle-btn" id="openCartBtn">
+      <button class="cart-toggle-btn" id="openCartBtn" type="button">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
           <line x1="3" y1="6" x2="21" y2="6"></line>
@@ -785,5 +784,94 @@
   <script src="js/api.js"></script>
   <script src="js/auth.js"></script>
   <script src="js/app.js"></script>
+
+  <!-- Interactive Controls: Drawer, Modals & Ribbon Carousel -->
+  <script>
+    function openCartDrawerUI() {
+      const drawer = document.getElementById('cartDrawer');
+      const backdrop = document.getElementById('drawerBackdrop');
+      if (drawer) drawer.classList.add('open');
+      if (backdrop) backdrop.style.display = 'block';
+      if (typeof renderCartDrawer === 'function') {
+        renderCartDrawer();
+      } else if (typeof updateCartUI === 'function') {
+        updateCartUI();
+      }
+    }
+
+    function closeCartDrawerUI() {
+      const drawer = document.getElementById('cartDrawer');
+      const backdrop = document.getElementById('drawerBackdrop');
+      if (drawer) drawer.classList.remove('open');
+      if (backdrop) backdrop.style.display = 'none';
+    }
+
+    function openAccountModalUI() {
+      const modal = document.getElementById('accountModal');
+      const backdrop = document.getElementById('accountModalBackdrop');
+      if (modal) modal.style.display = 'block';
+      if (backdrop) backdrop.style.display = 'block';
+    }
+
+    function closeAccountModalUI() {
+      const modal = document.getElementById('accountModal');
+      const backdrop = document.getElementById('accountModalBackdrop');
+      if (modal) modal.style.display = 'none';
+      if (backdrop) backdrop.style.display = 'none';
+    }
+
+    function switchAccountTab(tabName) {
+      document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+      document.querySelectorAll('.tab-pane').forEach(pane => pane.classList.remove('active'));
+
+      const activePane = document.getElementById(`tab-${tabName}`);
+      if (activePane) activePane.classList.add('active');
+
+      const activeBtn = Array.from(document.querySelectorAll('.tab-btn')).find(b => 
+        b.getAttribute('onclick') && b.getAttribute('onclick').includes(tabName)
+      );
+      if (activeBtn) activeBtn.classList.add('active');
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      // Cart drawer triggers
+      const openCartBtn = document.getElementById('openCartBtn');
+      if (openCartBtn) {
+        openCartBtn.addEventListener('click', (e) => {
+          e.preventDefault();
+          openCartDrawerUI();
+        });
+      }
+
+      const closeDrawerBtn = document.getElementById('closeDrawerBtn');
+      if (closeDrawerBtn) closeDrawerBtn.addEventListener('click', closeCartDrawerUI);
+
+      const drawerBackdrop = document.getElementById('drawerBackdrop');
+      if (drawerBackdrop) drawerBackdrop.addEventListener('click', closeCartDrawerUI);
+
+      // Account modal triggers
+      const closeAccountModalBtn = document.getElementById('closeAccountModalBtn');
+      if (closeAccountModalBtn) closeAccountModalBtn.addEventListener('click', closeAccountModalUI);
+
+      const accountModalBackdrop = document.getElementById('accountModalBackdrop');
+      if (accountModalBackdrop) accountModalBackdrop.addEventListener('click', closeAccountModalUI);
+
+      // Category ribbon scroll buttons
+      const ribbon = document.getElementById('categoryRibbon');
+      const leftBtn = document.getElementById('scrollLeftBtn');
+      const rightBtn = document.getElementById('scrollRightBtn');
+
+      if (ribbon && leftBtn) {
+        leftBtn.addEventListener('click', () => {
+          ribbon.scrollBy({ left: -240, behavior: 'smooth' });
+        });
+      }
+      if (ribbon && rightBtn) {
+        rightBtn.addEventListener('click', () => {
+          ribbon.scrollBy({ left: 240, behavior: 'smooth' });
+        });
+      }
+    });
+  </script>
 </body>
 </html>
