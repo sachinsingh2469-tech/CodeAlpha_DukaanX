@@ -6,8 +6,8 @@ const jwt = require('jsonwebtoken');
 const path = require('path');
 
 const app = express();
-const PORT = 5000;
-const JWT_SECRET = 'dukaanx_super_secret_jwt_key_2026';
+const PORT = process.env.PORT || 5000;
+const JWT_SECRET = process.env.JWT_SECRET || 'dukaanx_super_secret_jwt_key_2026';
 
 app.use(cors());
 app.use(express.json());
@@ -17,12 +17,17 @@ const frontendPath = path.resolve(__dirname, '../frontend');
 app.use(express.static(frontendPath));
 app.use('/images', express.static(path.join(frontendPath, 'images')));
 
-// Database Connection Pool
+// TiDB Cloud Database Connection Pool
 const db = mysql.createPool({
-  host: 'localhost',
-  user: 'root',
-  password: 'computer',
-  database: 'dukaanx_db',
+  host: process.env.DB_HOST || 'gateway01.ap-southeast-1.prod.aws.tidbcloud.com',
+  port: Number(process.env.DB_PORT) || 4000,
+  user: process.env.DB_USER || 'aXgNNF9mmi2V62o.root',
+  password: process.env.DB_PASSWORD || '74SpqOKIcHYKcVzN',
+  database: process.env.DB_NAME || 'dukaanxdb',
+  ssl: {
+    minVersion: 'TLSv1.2',
+    rejectUnauthorized: true
+  },
   waitForConnections: true,
   connectionLimit: 10,
   queueLimit: 0
@@ -74,7 +79,7 @@ const db = mysql.createPool({
       )
     `);
 
-    console.log('MySQL Users, Addresses, and Orders tables verified successfully.');
+    console.log('TiDB Cloud Users, Addresses, and Orders tables verified successfully.');
   } catch (err) {
     console.error('Failed to initialize DB tables:', err.message);
   }
@@ -319,7 +324,7 @@ app.post('/api/orders', async (req, res) => {
       ]
     );
 
-    console.log(`>>> Order recorded in MySQL: ${orderNumber} | Txn: ${txnId} (ID: ${result.insertId})`);
+    console.log(`>>> Order recorded in TiDB: ${orderNumber} | Txn: ${txnId} (ID: ${result.insertId})`);
 
     res.status(201).json({
       success: true,

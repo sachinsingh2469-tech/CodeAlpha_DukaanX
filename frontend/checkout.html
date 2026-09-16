@@ -3,263 +3,622 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Checkout - DukaanX</title>
+  <title>Checkout - DukaanX Store</title>
   <link rel="stylesheet" href="css/style.css" />
   <style>
-    .checkout-grid {
-      max-width: 960px;
-      margin: 40px auto;
-      display: grid;
-      grid-template-columns: 1.35fr 1fr;
-      gap: 32px;
-      padding: 0 20px;
+    :root {
+      --chk-bg: #ffffff;
+      --chk-sidebar-bg: #fbfbfd;
+      --chk-border: #e5e5e7;
+      --chk-text: #1d1d1f;
+      --chk-subtext: #6e6e73;
+      --chk-blue: #0071e3;
+      --chk-blue-hover: #0077ed;
+      --chk-card-bg: #ffffff;
     }
-    .input-field {
+
+    body {
+      margin: 0;
+      padding: 0;
+      background: var(--chk-bg);
+      color: var(--chk-text);
+      font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    .checkout-layout {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: row-reverse;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    /* RIGHT SUMMARY COLUMN */
+    .summary-column {
+      width: 42%;
+      background: var(--chk-sidebar-bg);
+      border-left: 1px solid var(--chk-border);
+      padding: 48px 40px;
+      box-sizing: border-box;
+    }
+
+    /* LEFT MAIN CHECKOUT FORM COLUMN */
+    .main-column {
+      width: 58%;
+      padding: 48px 48px 60px 32px;
+      box-sizing: border-box;
+    }
+
+    /* BREADCRUMB HEADER */
+    .brand-logo-chk {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+      color: #000;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      margin-bottom: 24px;
+    }
+    .brand-logo-chk svg {
+      fill: #000;
+    }
+
+    .breadcrumbs {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 12px;
+      margin-bottom: 28px;
+    }
+    .breadcrumb-item {
+      color: var(--chk-subtext);
+      cursor: pointer;
+      text-decoration: none;
+      font-weight: 500;
+    }
+    .breadcrumb-item.active {
+      color: var(--chk-text);
+      font-weight: 600;
+    }
+    .breadcrumb-separator {
+      color: #c7c7cc;
+      font-size: 10px;
+    }
+
+    /* FORM STYLING */
+    .section-title {
+      font-size: 17px;
+      font-weight: 600;
+      margin: 0 0 14px;
+      letter-spacing: -0.3px;
+    }
+
+    .input-box {
       width: 100%;
-      padding: 10px 14px;
-      border: 1px solid #d2d2d7;
+      padding: 12px 14px;
+      border: 1px solid var(--chk-border);
       border-radius: 8px;
-      margin-bottom: 12px;
+      background: #fff;
       font-size: 13px;
       outline: none;
       box-sizing: border-box;
-      font-family: inherit;
+      margin-bottom: 12px;
+      color: var(--chk-text);
+      transition: border-color 0.2s;
     }
-    .saved-addr-select {
-      background-color: #f5f5f7;
-      border: 1px solid #0071e3;
-      color: #1d1d1f;
-      font-weight: 500;
-      cursor: pointer;
+    .input-box:focus {
+      border-color: var(--chk-blue);
+      box-shadow: 0 0 0 3px rgba(0, 113, 227, 0.15);
+    }
+    .input-row {
+      display: flex;
+      gap: 12px;
     }
 
-    /* Payment Methods Tabs */
-    .payment-section {
-      margin-top: 24px;
-      padding-top: 20px;
-      border-top: 1px solid #e5e5e7;
-    }
-    .payment-tabs {
-      display: flex;
-      gap: 8px;
-      margin-bottom: 16px;
-    }
-    .pay-tab-btn {
-      flex: 1;
-      padding: 10px 8px;
-      border: 1px solid #d2d2d7;
+    /* REVIEW BADGE (Contact & Shipping review table) */
+    .review-panel {
+      border: 1px solid var(--chk-border);
+      border-radius: 10px;
+      padding: 4px 16px;
+      margin-bottom: 28px;
       background: #fff;
-      border-radius: 8px;
+    }
+    .review-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 0;
       font-size: 13px;
+      border-bottom: 1px solid #f0f0f2;
+    }
+    .review-row:last-child {
+      border-bottom: none;
+    }
+    .review-label {
+      color: var(--chk-subtext);
+      width: 80px;
+      flex-shrink: 0;
+    }
+    .review-val {
+      flex: 1;
+      color: var(--chk-text);
+      font-weight: 500;
+      padding: 0 10px;
+    }
+    .review-change {
+      color: var(--chk-blue);
+      text-decoration: none;
+      font-size: 12px;
+      cursor: pointer;
+      font-weight: 500;
+    }
+    .review-change:hover {
+      text-decoration: underline;
+    }
+
+    /* SELECTABLE CARDS (Shipping rates & Payments) */
+    .radio-card-stack {
+      border: 1px solid var(--chk-border);
+      border-radius: 10px;
+      overflow: hidden;
+      margin-bottom: 28px;
+      background: #fff;
+    }
+    .radio-card {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px;
+      cursor: pointer;
+      border-bottom: 1px solid var(--chk-border);
+      transition: background 0.15s;
+    }
+    .radio-card:last-child {
+      border-bottom: none;
+    }
+    .radio-card.active {
+      background: #fbfcfe;
+    }
+    .radio-card-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .radio-circle {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      border: 2px solid #d2d2d7;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .radio-card.active .radio-circle {
+      border-color: var(--chk-blue);
+    }
+    .radio-card.active .radio-circle::after {
+      content: '';
+      width: 8px;
+      height: 8px;
+      background: var(--chk-blue);
+      border-radius: 50%;
+    }
+
+    /* STEP NAVIGATION BUTTONS */
+    .btn-step-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 24px;
+    }
+    .btn-return {
+      color: var(--chk-blue);
+      font-size: 13px;
+      text-decoration: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .btn-action-submit {
+      background: var(--chk-blue);
+      color: #fff;
+      border: none;
+      padding: 14px 26px;
+      border-radius: 8px;
+      font-size: 14px;
       font-weight: 600;
       cursor: pointer;
-      color: #1d1d1f;
-      text-align: center;
-      transition: all 0.2s ease;
+      transition: background 0.2s;
     }
-    .pay-tab-btn.active {
-      border-color: #0071e3;
-      background: #f0f7ff;
-      color: #0071e3;
+    .btn-action-submit:hover {
+      background: var(--chk-blue-hover);
     }
-    .pay-pane {
-      display: none;
-      background: #fafafa;
+
+    /* PAYMENT PANELS */
+    .pay-content-body {
+      background: #f9f9fb;
       padding: 16px;
+      border-top: 1px solid var(--chk-border);
+      display: none;
+    }
+    .radio-card.active + .pay-content-body {
+      display: block;
+    }
+
+    /* QR / SCANNER CARD */
+    .upi-white-box {
+      background: #fff;
+      border: 1px solid var(--chk-border);
       border-radius: 12px;
-      border: 1px solid #e5e5e7;
+      padding: 16px;
+      text-align: center;
+      max-width: 280px;
+      margin: 0 auto 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.04);
+    }
+    .upi-white-box img {
+      width: 190px;
+      height: 190px;
+      object-fit: contain;
+      margin: 8px auto;
+      display: block;
+    }
+
+    /* SUMMARY ITEMS */
+    .summary-item-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
       margin-bottom: 16px;
     }
-    .pay-pane.active {
-      display: block;
+    .summary-item-left {
+      display: flex;
+      align-items: center;
+      gap: 14px;
     }
-
-    /* UPI Box Styling */
-    .upi-scanner-card {
-      background: #1e1e24;
-      border-radius: 16px;
-      padding: 20px;
-      text-align: center;
-      color: #fff;
-      max-width: 320px;
-      margin: 0 auto 16px;
-      box-shadow: 0 8px 24px rgba(0,0,0,0.15);
-    }
-    .upi-qr-image {
-      width: 220px;
-      height: 220px;
-      object-fit: contain;
-      border-radius: 12px;
-      background: #fff;
-      padding: 6px;
-      margin: 12px auto;
-      display: block;
-    }
-    .upi-copy-pill {
-      background: rgba(255, 255, 255, 0.1);
-      padding: 8px 12px;
+    .summary-img-thumb {
+      width: 58px;
+      height: 58px;
       border-radius: 8px;
-      font-size: 12px;
+      border: 1px solid var(--chk-border);
+      background: #fff;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .summary-img-thumb img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 8px;
+    }
+    .summary-img-badge {
+      position: absolute;
+      top: -6px;
+      right: -6px;
+      background: rgba(0, 0, 0, 0.65);
+      color: #fff;
+      font-size: 11px;
+      font-weight: 600;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .summary-line-item {
       display: flex;
       justify-content: space-between;
-      align-items: center;
-      margin-top: 8px;
-      font-family: monospace;
-      letter-spacing: 0.5px;
+      font-size: 13px;
+      color: var(--chk-subtext);
+      margin-bottom: 10px;
     }
 
-    /* Success Modal */
-    .success-modal-overlay {
+    /* CONFIRMATION POPUP */
+    .success-overlay {
       position: fixed;
       inset: 0;
-      background: rgba(0, 0, 0, 0.5);
+      background: rgba(0, 0, 0, 0.4);
       display: none;
       align-items: center;
       justify-content: center;
-      z-index: 2000;
+      z-index: 9999;
       backdrop-filter: blur(4px);
     }
-    .modal-box {
+    .success-card {
       background: #fff;
-      padding: 36px 30px;
       border-radius: 16px;
+      padding: 36px 30px;
       text-align: center;
-      max-width: 440px;
+      max-width: 420px;
       width: 90%;
-      animation: popIn 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.1);
     }
-    .checkmark-circle {
-      width: 54px;
-      height: 54px;
+    .check-icon-circle {
+      width: 56px;
+      height: 56px;
       background: #10b981;
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
-      margin: 0 auto 14px;
       color: #fff;
-      font-size: 24px;
+      font-size: 26px;
+      margin: 0 auto 16px;
     }
-    @keyframes popIn {
-      from { transform: scale(0.85); opacity: 0; }
-      to { transform: scale(1); opacity: 1; }
+
+    @media (max-width: 860px) {
+      .checkout-layout {
+        flex-direction: column-reverse;
+      }
+      .summary-column, .main-column {
+        width: 100%;
+        padding: 24px;
+      }
     }
   </style>
 </head>
 <body>
 
-  <header class="header-bar">
-    <a href="index.html" class="brand-wrapper">
-      <div class="brand-icon-box">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="black">
+  <div class="checkout-layout">
+    
+    <!-- RIGHT: ORDER SUMMARY COLUMN -->
+    <aside class="summary-column">
+      <div id="checkoutSummaryList"></div>
+
+      <div style="border-top: 1px solid var(--chk-border); padding-top: 18px; margin-top: 20px;">
+        <div class="summary-line-item">
+          <span>Subtotal</span>
+          <span id="summarySubtotal" style="font-weight: 500; color: var(--chk-text);">₹0</span>
+        </div>
+        <div class="summary-line-item">
+          <span>Shipping</span>
+          <span id="summaryShipping" style="font-weight: 500; color: var(--chk-text);">₹0</span>
+        </div>
+        <div style="display: flex; justify-content: space-between; align-items: baseline; font-size: 18px; font-weight: 700; margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--chk-border);">
+          <span style="font-size: 15px; font-weight: 500;">Total</span>
+          <div>
+            <small style="font-size: 11px; color: var(--chk-subtext); font-weight: 400;">INR</small>
+            <span id="summaryGrandTotal" style="color: var(--chk-text); margin-left: 4px;">₹0</span>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- LEFT: 3-STEP CHECKOUT COLUMN -->
+    <main class="main-column">
+      <a href="index.html" class="brand-logo-chk">
+        <svg width="20" height="20" viewBox="0 0 24 24">
           <polygon points="12 2 22 22 2 22"></polygon>
         </svg>
-      </div>
-      <span class="brand-logo-text">DUKAANX STORE</span>
-    </a>
-  </header>
+        <span style="letter-spacing: 0.5px;">DUKAANX</span>
+      </a>
 
-  <div class="checkout-grid">
-    <div>
-      <h2 style="font-size: 18px; margin-bottom: 14px;">1. Shipping Details</h2>
-      <form id="checkoutForm">
-        <input type="text" id="orderName" class="input-field" placeholder="Full Name" required />
-        <input type="email" id="orderEmail" class="input-field" placeholder="Email Address" required />
+      <!-- Step Breadcrumbs -->
+      <nav class="breadcrumbs">
+        <span class="breadcrumb-item active" id="crumb-info" onclick="goToStep(1)">Information</span>
+        <span class="breadcrumb-separator">›</span>
+        <span class="breadcrumb-item" id="crumb-ship" onclick="goToStep(2)">Shipping</span>
+        <span class="breadcrumb-separator">›</span>
+        <span class="breadcrumb-item" id="crumb-pay" onclick="goToStep(3)">Payment</span>
+      </nav>
 
-        <!-- Auto-filled Saved Addresses Dropdown -->
-        <div id="savedAddressWrapper" style="display: none; margin-bottom: 10px;">
-          <label style="font-size: 12px; font-weight: 600; color: #6e6e73; display: block; margin-bottom: 4px;">
-            Saved Addresses
-          </label>
-          <select id="savedAddressDropdown" class="input-field saved-addr-select"></select>
+      <!-- ================= STEP 1: INFORMATION ================= -->
+      <section id="step-1" class="checkout-step">
+        <h2 class="section-title">Contact</h2>
+        <input type="text" id="custEmailOrPhone" class="input-box" placeholder="Email or mobile phone number" required />
+
+        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 24px; font-size: 13px; color: var(--chk-subtext);">
+          <input type="checkbox" id="newsCheckbox" checked />
+          <label for="newsCheckbox">Email me with news and exclusive offers</label>
         </div>
 
-        <textarea id="orderAddress" class="input-field" style="height: 80px; resize: none;" placeholder="Complete Shipping Address" required></textarea>
+        <h2 class="section-title">Shipping address</h2>
+        
+        <!-- Auto-filled Saved Addresses Dropdown -->
+        <div id="savedAddressBlock" style="display: none; margin-bottom: 12px;">
+          <select id="savedAddressSelect" class="input-box" style="background:#f5f5f7; border-color:#0071e3; font-weight:500; cursor:pointer;"></select>
+        </div>
 
-        <!-- 2. PAYMENT METHODS SECTION -->
-        <div class="payment-section">
-          <h2 style="font-size: 18px; margin-bottom: 14px;">2. Payment Option</h2>
+        <select id="countrySelect" class="input-box">
+          <option value="India">India</option>
+          <option value="United States">United States</option>
+        </select>
 
-          <div class="payment-tabs">
-            <button type="button" class="pay-tab-btn active" data-method="UPI" onclick="selectPayTab('upi')">📱 UPI / QR</button>
-            <button type="button" class="pay-tab-btn" data-method="Card" onclick="selectPayTab('card')">💳 Debit / Credit Card</button>
-            <button type="button" class="pay-tab-btn" data-method="Cash on Delivery" onclick="selectPayTab('cod')">💵 Cash on Delivery</button>
+        <div class="input-row">
+          <input type="text" id="custFirstName" class="input-box" placeholder="First name" required />
+          <input type="text" id="custLastName" class="input-box" placeholder="Last name" required />
+        </div>
+
+        <input type="text" id="custAddress" class="input-box" placeholder="Address (House/Flat no, Street)" required />
+        <input type="text" id="custApartment" class="input-box" placeholder="Apartment, suite, landmark (optional)" />
+
+        <div class="input-row">
+          <input type="text" id="custCity" class="input-box" placeholder="City" required />
+          <input type="text" id="custState" class="input-box" placeholder="State" value="Jharkhand" required />
+          <input type="text" id="custZip" class="input-box" placeholder="PIN code" required />
+        </div>
+
+        <div class="btn-step-row">
+          <a href="index.html" class="btn-return">‹ Return to cart</a>
+          <button type="button" class="btn-action-submit" onclick="validateStep1AndProceed()">Continue to shipping</button>
+        </div>
+      </section>
+
+      <!-- ================= STEP 2: SHIPPING ================= -->
+      <section id="step-2" class="checkout-step" style="display: none;">
+        <!-- Review Box -->
+        <div class="review-panel">
+          <div class="review-row">
+            <span class="review-label">Contact</span>
+            <span class="review-val" id="reviewContactText"></span>
+            <span class="review-change" onclick="goToStep(1)">Change</span>
           </div>
+          <div class="review-row">
+            <span class="review-label">Ship to</span>
+            <span class="review-val" id="reviewShipText"></span>
+            <span class="review-change" onclick="goToStep(1)">Change</span>
+          </div>
+        </div>
 
-          <!-- TAB 1: UPI & QR SCANNER -->
-          <div id="pay-pane-upi" class="pay-pane active">
-            <div class="upi-scanner-card">
-              <div style="font-size: 15px; font-weight: 600;">Sachin Kumar</div>
-              <img src="images/upi-qr.jpeg" alt="Google Pay QR Code" class="upi-qr-image" />
-              <div style="font-size: 11px; opacity: 0.8;">Scan with GPay, PhonePe, Paytm or any UPI App</div>
-              <div class="upi-copy-pill">
-                <span id="upiIdText">sachinsingh2469-1@okicici</span>
-                <span style="cursor:pointer; color:#38bdf8;" onclick="navigator.clipboard.writeText('sachinsingh2469-1@okicici'); alert('UPI ID copied!')">Copy</span>
+        <h2 class="section-title">Shipping method</h2>
+        <div class="radio-card-stack">
+          <div class="radio-card active" id="shipOpt-economy" onclick="selectShippingRate('economy', 0)">
+            <div class="radio-card-left">
+              <div class="radio-circle"></div>
+              <div>
+                <div style="font-size: 13px; font-weight: 600;">Economy</div>
+                <div style="font-size: 12px; color: var(--chk-subtext);">5 to 8 business days</div>
               </div>
             </div>
-
-            <label style="font-size: 12px; font-weight: 600; color: #1d1d1f; display: block; margin-bottom: 4px;">Or Pay via UPI ID</label>
-            <input type="text" id="upiIdInput" class="input-field" placeholder="e.g. mobile@upi or name@oksbi" />
-
-            <label style="font-size: 12px; font-weight: 600; color: #1d1d1f; display: block; margin-bottom: 4px;">UPI Reference / Transaction UTR (Optional)</label>
-            <input type="text" id="upiRefInput" class="input-field" placeholder="12-digit UTR from banking app (Auto-generated if empty)" />
+            <strong style="font-size: 13px;">Free</strong>
           </div>
 
-          <!-- TAB 2: CREDIT / DEBIT CARD -->
-          <div id="pay-pane-card" class="pay-pane">
-            <label style="font-size: 12px; font-weight: 600; color: #1d1d1f; display: block; margin-bottom: 4px;">Card Number</label>
-            <input type="text" id="cardNumberInput" class="input-field" placeholder="4532 •••• •••• ••••" maxlength="19" />
-            <div style="display: flex; gap: 10px;">
-              <input type="text" id="cardExpiryInput" class="input-field" placeholder="MM / YY" maxlength="5" />
-              <input type="password" id="cardCvvInput" class="input-field" placeholder="CVV" maxlength="4" />
+          <div class="radio-card" id="shipOpt-standard" onclick="selectShippingRate('standard', 99)">
+            <div class="radio-card-left">
+              <div class="radio-circle"></div>
+              <div>
+                <div style="font-size: 13px; font-weight: 600;">Express / Standard</div>
+                <div style="font-size: 12px; color: var(--chk-subtext);">2 to 3 business days</div>
+              </div>
             </div>
-            <input type="text" id="cardHolderInput" class="input-field" placeholder="Cardholder Name" />
+            <strong style="font-size: 13px;">₹99.00</strong>
+          </div>
+        </div>
+
+        <div class="btn-step-row">
+          <span class="btn-return" onclick="goToStep(1)">‹ Return to information</span>
+          <button type="button" class="btn-action-submit" onclick="goToStep(3)">Continue to payment</button>
+        </div>
+      </section>
+
+      <!-- ================= STEP 3: PAYMENT ================= -->
+      <section id="step-3" class="checkout-step" style="display: none;">
+        <!-- Review Box -->
+        <div class="review-panel">
+          <div class="review-row">
+            <span class="review-label">Contact</span>
+            <span class="review-val" id="reviewContactText2"></span>
+            <span class="review-change" onclick="goToStep(1)">Change</span>
+          </div>
+          <div class="review-row">
+            <span class="review-label">Ship to</span>
+            <span class="review-val" id="reviewShipText2"></span>
+            <span class="review-change" onclick="goToStep(1)">Change</span>
+          </div>
+          <div class="review-row">
+            <span class="review-label">Method</span>
+            <span class="review-val" id="reviewMethodText">Economy · Free</span>
+            <span class="review-change" onclick="goToStep(2)">Change</span>
+          </div>
+        </div>
+
+        <h2 class="section-title">Payment</h2>
+        <p style="font-size: 12px; color: var(--chk-subtext); margin-top: -8px; margin-bottom: 14px;">
+          All transactions are secure and encrypted.
+        </p>
+
+        <!-- Payment Mode Stack -->
+        <div class="radio-card-stack">
+          <!-- 1. CASH ON DELIVERY (Click & Confirm immediately) -->
+          <div class="radio-card active" id="payOpt-cod" onclick="selectPaymentMethod('Cash on Delivery')">
+            <div class="radio-card-left">
+              <div class="radio-circle"></div>
+              <div>
+                <div style="font-size: 13px; font-weight: 600;">💵 Cash on Delivery (COD)</div>
+                <div style="font-size: 12px; color: var(--chk-subtext);">Pay via cash or UPI upon delivery</div>
+              </div>
+            </div>
+            <span style="font-size: 11px; font-weight:600; color:#10b981; background:#ecfdf5; padding:2px 8px; border-radius:99px;">No Advance</span>
+          </div>
+          <div class="pay-content-body" id="body-cod" style="display: block;">
+            <p style="font-size: 13px; margin: 0; color: var(--chk-subtext);">
+              Place your order now without online transaction. You can pay our delivery partner via Cash or UPI at your doorstep.
+            </p>
           </div>
 
-          <!-- TAB 3: CASH ON DELIVERY -->
-          <div id="pay-pane-cod" class="pay-pane">
-            <div style="display: flex; align-items: center; gap: 10px; font-size: 13px; color: #1d1d1f;">
-              <span style="font-size: 22px;">📦</span>
-              <span>Pay with cash or UPI at the time of delivery to your doorstep. No advance payment required.</span>
+          <!-- 2. UPI / QR SCANNER -->
+          <div class="radio-card" id="payOpt-upi" onclick="selectPaymentMethod('UPI')">
+            <div class="radio-card-left">
+              <div class="radio-circle"></div>
+              <div>
+                <div style="font-size: 13px; font-weight: 600;">📱 UPI & Instant QR</div>
+                <div style="font-size: 12px; color: var(--chk-subtext);">Google Pay, PhonePe, Paytm</div>
+              </div>
+            </div>
+          </div>
+          <div class="pay-content-body" id="body-upi">
+            <div class="upi-white-box">
+              <div style="font-size: 14px; font-weight: 600; color: #1d1d1f;">Scan to Pay</div>
+              <img src="images/upi-qr.jpeg" alt="GPay QR Code" />
+              <div style="font-size: 12px; font-family: monospace; background: #f5f5f7; padding: 6px; border-radius: 6px; margin-top: 4px;">
+                sachinsingh2469-1@okicici
+              </div>
+            </div>
+            <input type="text" id="upiUtrInput" class="input-box" placeholder="12-digit UTR/Reference ID from payment app (Optional)" />
+          </div>
+
+          <!-- 3. DEBIT / CREDIT CARD -->
+          <div class="radio-card" id="payOpt-card" onclick="selectPaymentMethod('Card')">
+            <div class="radio-card-left">
+              <div class="radio-circle"></div>
+              <div>
+                <div style="font-size: 13px; font-weight: 600;">💳 Credit / Debit Card</div>
+                <div style="font-size: 12px; color: var(--chk-subtext);">Visa, Mastercard, RuPay</div>
+              </div>
+            </div>
+          </div>
+          <div class="pay-content-body" id="body-card">
+            <input type="text" id="chkCardNumber" class="input-box" placeholder="Card number (4532 •••• •••• ••••)" maxlength="19" />
+            <div class="input-row">
+              <input type="text" id="chkCardExp" class="input-box" placeholder="MM / YY" maxlength="5" />
+              <input type="password" id="chkCardCvv" class="input-box" placeholder="CVV" maxlength="4" />
             </div>
           </div>
         </div>
 
-        <button type="submit" id="submitOrderBtn" class="btn-primary-blue" style="width: 100%; padding: 14px; font-size: 14px; font-weight: 600; margin-top: 10px;">
-          Pay & Place Order
-        </button>
-      </form>
-    </div>
+        <div class="btn-step-row">
+          <span class="btn-return" onclick="goToStep(2)">‹ Return to shipping</span>
+          <button type="button" id="payNowBtn" class="btn-action-submit" onclick="submitFinalOrder()">
+            Complete order
+          </button>
+        </div>
+      </section>
 
-    <!-- Right Side: Order Summary -->
-    <div style="border: 1px solid #e5e5e7; padding: 20px; border-radius: 12px; height: fit-content; background: #fafafa;">
-      <h3 style="font-size: 15px; margin-bottom: 12px;">Order Summary</h3>
-      <div id="checkoutList"></div>
-      <hr style="border: none; border-top: 1px solid #e5e5e7; margin: 12px 0;" />
-      <div style="display: flex; justify-content: space-between; font-size: 15px;">
-        <span>Total Payable:</span>
-        <strong id="checkoutTotal" style="color: #0071e3;">₹0 INR</strong>
+      <footer style="margin-top: 60px; font-size: 11px; color: #86868b; border-top: 1px solid var(--chk-border); padding-top: 16px;">
+        All rights reserved DukaanX Store
+      </footer>
+    </main>
+
+  </div>
+
+  <!-- ORDER SUCCESS MODAL -->
+  <div class="success-overlay" id="orderSuccessModal">
+    <div class="success-card">
+      <div class="check-icon-circle">✓</div>
+      <h2 style="margin: 0 0 8px; font-size: 21px;">Order Confirmed!</h2>
+      <p style="color: var(--chk-subtext); font-size: 13px; margin: 0 0 20px;">
+        Thank you for shopping with DukaanX.
+      </p>
+
+      <div style="background: #fbfbfd; border: 1px solid var(--chk-border); border-radius: 10px; padding: 14px; font-size: 13px; text-align: left; margin-bottom: 24px; line-height: 1.8;">
+        <div>Order Number: <strong id="modalOrderNo" style="color: var(--chk-blue);"></strong></div>
+        <div>Payment Mode: <strong id="modalPayMode"></strong></div>
+        <div>Transaction ID: <code id="modalTxnId" style="background:#e5e7eb; padding:2px 6px; border-radius:4px; font-weight:600;"></code></div>
       </div>
+
+      <a href="index.html" class="btn-action-submit" style="display: block; text-decoration: none; text-align: center;">
+        Continue Shopping
+      </a>
     </div>
   </div>
 
-  <!-- Animated Confirmation Modal -->
-  <div class="success-modal-overlay" id="successOverlay">
-    <div class="modal-box">
-      <div class="checkmark-circle">✓</div>
-      <h2 style="font-size: 20px; margin-bottom: 6px;">Payment Successful!</h2>
-      <p style="color: #6e6e73; font-size: 13px; margin-bottom: 16px;">Your order has been recorded in the system.</p>
-      
-      <div style="background: #f5f5f7; padding: 14px; border-radius: 10px; font-size: 13px; margin-bottom: 20px; text-align: left; display: flex; flex-direction: column; gap: 6px;">
-        <div>Order ID: <strong id="modalOrderNumber" style="color: #0071e3;"></strong></div>
-        <div>Payment Mode: <strong id="modalPaymentMode"></strong></div>
-        <div>Transaction ID: <code id="modalTxnId" style="background:#e5e7eb; padding:2px 6px; border-radius:4px;"></code></div>
-      </div>
-
-      <a href="index.html" class="btn-primary-blue" style="display: block; text-decoration: none; padding: 11px;">Continue Shopping</a>
-    </div>
-  </div>
-
-  <script src="js/checkout.js?v=4"></script>
+  <script src="js/checkout.js?v=5"></script>
 </body>
 </html>

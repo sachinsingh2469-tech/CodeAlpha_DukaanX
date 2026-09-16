@@ -1,4 +1,6 @@
-const AUTH_API_BASE = 'http://localhost:5000/api';
+const AUTH_API_BASE = window.location.origin.includes('localhost')
+  ? 'http://localhost:5000/api'
+  : '/api';
 
 const auth = {
   getToken() {
