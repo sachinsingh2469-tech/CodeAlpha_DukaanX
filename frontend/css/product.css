@@ -1,0 +1,120 @@
+.product-page-wrapper {
+  max-width: 1320px;
+  margin: 20px auto;
+  padding: 20px;
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: 60px;
+  border: 1px solid var(--card-border);
+  border-radius: 16px;
+}
+
+.product-gallery-box {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 520px;
+}
+
+.product-gallery-box img {
+  max-width: 70%;
+  max-height: 480px;
+  object-fit: contain;
+}
+
+.gallery-nav-pill {
+  position: absolute;
+  bottom: 12px;
+  display: flex;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(8px);
+  border: 1px solid var(--border-light);
+  border-radius: 9999px;
+  padding: 4px 14px;
+  gap: 16px;
+}
+
+.gallery-nav-pill button {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.product-info-panel {
+  display: flex;
+  flex-direction: column;
+}
+
+.product-title-large {
+  font-size: 42px;
+  font-weight: 700;
+  letter-spacing: -0.8px;
+  line-height: 1.1;
+  margin-bottom: 14px;
+}
+
+.price-pill-detail {
+  display: inline-block;
+  width: fit-content;
+  background-color: var(--blue-badge);
+  color: #fff;
+  border-radius: 9999px;
+  padding: 6px 14px;
+  font-size: 14px;
+  font-weight: 700;
+  margin-bottom: 24px;
+}
+
+.divider-line {
+  height: 1px;
+  background: var(--border-light);
+  margin-bottom: 24px;
+}
+
+.option-group-label {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: #000;
+  margin-bottom: 10px;
+}
+
+.pill-options-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 24px;
+}
+
+.option-chip {
+  background: #f5f5f5;
+  border: 1px solid transparent;
+  padding: 8px 18px;
+  border-radius: 9999px;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.option-chip.selected {
+  border-color: #000;
+  background: #000;
+  color: #fff;
+}
+
+.option-chip.disabled {
+  opacity: 0.4;
+  text-decoration: line-through;
+  cursor: not-allowed;
+}
+
+.product-desc-para {
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--text-muted);
+  margin-bottom: 32px;
+}

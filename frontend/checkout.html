@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Checkout - DukaanX</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <style>
+    .checkout-grid {
+      max-width: 960px;
+      margin: 40px auto;
+      display: grid;
+      grid-template-columns: 1.35fr 1fr;
+      gap: 32px;
+      padding: 0 20px;
+    }
+    .input-field {
+      width: 100%;
+      padding: 10px 14px;
+      border: 1px solid #d2d2d7;
+      border-radius: 8px;
+      margin-bottom: 12px;
+      font-size: 13px;
+      outline: none;
+      box-sizing: border-box;
+      font-family: inherit;
+    }
+    .saved-addr-select {
+      background-color: #f5f5f7;
+      border: 1px solid #0071e3;
+      color: #1d1d1f;
+      font-weight: 500;
+      cursor: pointer;
+    }
+
+    /* Payment Methods Tabs */
+    .payment-section {
+      margin-top: 24px;
+      padding-top: 20px;
+      border-top: 1px solid #e5e5e7;
+    }
+    .payment-tabs {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+    .pay-tab-btn {
+      flex: 1;
+      padding: 10px 8px;
+      border: 1px solid #d2d2d7;
+      background: #fff;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      color: #1d1d1f;
+      text-align: center;
+      transition: all 0.2s ease;
+    }
+    .pay-tab-btn.active {
+      border-color: #0071e3;
+      background: #f0f7ff;
+      color: #0071e3;
+    }
+    .pay-pane {
+      display: none;
+      background: #fafafa;
+      padding: 16px;
+      border-radius: 12px;
+      border: 1px solid #e5e5e7;
+      margin-bottom: 16px;
+    }
+    .pay-pane.active {
+      display: block;
+    }
+
+    /* UPI Box Styling */
+    .upi-scanner-card {
+      background: #1e1e24;
+      border-radius: 16px;
+      padding: 20px;
+      text-align: center;
+      color: #fff;
+      max-width: 320px;
+      margin: 0 auto 16px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+    }
+    .upi-qr-image {
+      width: 220px;
+      height: 220px;
+      object-fit: contain;
+      border-radius: 12px;
+      background: #fff;
+      padding: 6px;
+      margin: 12px auto;
+      display: block;
+    }
+    .upi-copy-pill {
+      background: rgba(255, 255, 255, 0.1);
+      padding: 8px 12px;
+      border-radius: 8px;
+      font-size: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 8px;
+      font-family: monospace;
+      letter-spacing: 0.5px;
+    }
+
+    /* Success Modal */
+    .success-modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.5);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 2000;
+      backdrop-filter: blur(4px);
+    }
+    .modal-box {
+      background: #fff;
+      padding: 36px 30px;
+      border-radius: 16px;
+      text-align: center;
+      max-width: 440px;
+      width: 90%;
+      animation: popIn 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+    .checkmark-circle {
+      width: 54px;
+      height: 54px;
+      background: #10b981;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 14px;
+      color: #fff;
+      font-size: 24px;
+    }
+    @keyframes popIn {
+      from { transform: scale(0.85); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="header-bar">
+    <a href="index.html" class="brand-wrapper">
+      <div class="brand-icon-box">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="black">
+          <polygon points="12 2 22 22 2 22"></polygon>
+        </svg>
+      </div>
+      <span class="brand-logo-text">DUKAANX STORE</span>
+    </a>
+  </header>
+
+  <div class="checkout-grid">
+    <div>
+      <h2 style="font-size: 18px; margin-bottom: 14px;">1. Shipping Details</h2>
+      <form id="checkoutForm">
+        <input type="text" id="orderName" class="input-field" placeholder="Full Name" required />
+        <input type="email" id="orderEmail" class="input-field" placeholder="Email Address" required />
+
+        <!-- Auto-filled Saved Addresses Dropdown -->
+        <div id="savedAddressWrapper" style="display: none; margin-bottom: 10px;">
+          <label style="font-size: 12px; font-weight: 600; color: #6e6e73; display: block; margin-bottom: 4px;">
+            Saved Addresses
+          </label>
+          <select id="savedAddressDropdown" class="input-field saved-addr-select"></select>
+        </div>
+
+        <textarea id="orderAddress" class="input-field" style="height: 80px; resize: none;" placeholder="Complete Shipping Address" required></textarea>
+
+        <!-- 2. PAYMENT METHODS SECTION -->
+        <div class="payment-section">
+          <h2 style="font-size: 18px; margin-bottom: 14px;">2. Payment Option</h2>
+
+          <div class="payment-tabs">
+            <button type="button" class="pay-tab-btn active" data-method="UPI" onclick="selectPayTab('upi')">📱 UPI / QR</button>
+            <button type="button" class="pay-tab-btn" data-method="Card" onclick="selectPayTab('card')">💳 Debit / Credit Card</button>
+            <button type="button" class="pay-tab-btn" data-method="Cash on Delivery" onclick="selectPayTab('cod')">💵 Cash on Delivery</button>
+          </div>
+
+          <!-- TAB 1: UPI & QR SCANNER -->
+          <div id="pay-pane-upi" class="pay-pane active">
+            <div class="upi-scanner-card">
+              <div style="font-size: 15px; font-weight: 600;">Sachin Kumar</div>
+              <img src="images/upi-qr.jpeg" alt="Google Pay QR Code" class="upi-qr-image" />
+              <div style="font-size: 11px; opacity: 0.8;">Scan with GPay, PhonePe, Paytm or any UPI App</div>
+              <div class="upi-copy-pill">
+                <span id="upiIdText">sachinsingh2469-1@okicici</span>
+                <span style="cursor:pointer; color:#38bdf8;" onclick="navigator.clipboard.writeText('sachinsingh2469-1@okicici'); alert('UPI ID copied!')">Copy</span>
+              </div>
+            </div>
+
+            <label style="font-size: 12px; font-weight: 600; color: #1d1d1f; display: block; margin-bottom: 4px;">Or Pay via UPI ID</label>
+            <input type="text" id="upiIdInput" class="input-field" placeholder="e.g. mobile@upi or name@oksbi" />
+
+            <label style="font-size: 12px; font-weight: 600; color: #1d1d1f; display: block; margin-bottom: 4px;">UPI Reference / Transaction UTR (Optional)</label>
+            <input type="text" id="upiRefInput" class="input-field" placeholder="12-digit UTR from banking app (Auto-generated if empty)" />
+          </div>
+
+          <!-- TAB 2: CREDIT / DEBIT CARD -->
+          <div id="pay-pane-card" class="pay-pane">
+            <label style="font-size: 12px; font-weight: 600; color: #1d1d1f; display: block; margin-bottom: 4px;">Card Number</label>
+            <input type="text" id="cardNumberInput" class="input-field" placeholder="4532 •••• •••• ••••" maxlength="19" />
+            <div style="display: flex; gap: 10px;">
+              <input type="text" id="cardExpiryInput" class="input-field" placeholder="MM / YY" maxlength="5" />
+              <input type="password" id="cardCvvInput" class="input-field" placeholder="CVV" maxlength="4" />
+            </div>
+            <input type="text" id="cardHolderInput" class="input-field" placeholder="Cardholder Name" />
+          </div>
+
+          <!-- TAB 3: CASH ON DELIVERY -->
+          <div id="pay-pane-cod" class="pay-pane">
+            <div style="display: flex; align-items: center; gap: 10px; font-size: 13px; color: #1d1d1f;">
+              <span style="font-size: 22px;">📦</span>
+              <span>Pay with cash or UPI at the time of delivery to your doorstep. No advance payment required.</span>
+            </div>
+          </div>
+        </div>
+
+        <button type="submit" id="submitOrderBtn" class="btn-primary-blue" style="width: 100%; padding: 14px; font-size: 14px; font-weight: 600; margin-top: 10px;">
+          Pay & Place Order
+        </button>
+      </form>
+    </div>
+
+    <!-- Right Side: Order Summary -->
+    <div style="border: 1px solid #e5e5e7; padding: 20px; border-radius: 12px; height: fit-content; background: #fafafa;">
+      <h3 style="font-size: 15px; margin-bottom: 12px;">Order Summary</h3>
+      <div id="checkoutList"></div>
+      <hr style="border: none; border-top: 1px solid #e5e5e7; margin: 12px 0;" />
+      <div style="display: flex; justify-content: space-between; font-size: 15px;">
+        <span>Total Payable:</span>
+        <strong id="checkoutTotal" style="color: #0071e3;">₹0 INR</strong>
+      </div>
+    </div>
+  </div>
+
+  <!-- Animated Confirmation Modal -->
+  <div class="success-modal-overlay" id="successOverlay">
+    <div class="modal-box">
+      <div class="checkmark-circle">✓</div>
+      <h2 style="font-size: 20px; margin-bottom: 6px;">Payment Successful!</h2>
+      <p style="color: #6e6e73; font-size: 13px; margin-bottom: 16px;">Your order has been recorded in the system.</p>
+      
+      <div style="background: #f5f5f7; padding: 14px; border-radius: 10px; font-size: 13px; margin-bottom: 20px; text-align: left; display: flex; flex-direction: column; gap: 6px;">
+        <div>Order ID: <strong id="modalOrderNumber" style="color: #0071e3;"></strong></div>
+        <div>Payment Mode: <strong id="modalPaymentMode"></strong></div>
+        <div>Transaction ID: <code id="modalTxnId" style="background:#e5e7eb; padding:2px 6px; border-radius:4px;"></code></div>
+      </div>
+
+      <a href="index.html" class="btn-primary-blue" style="display: block; text-decoration: none; padding: 11px;">Continue Shopping</a>
+    </div>
+  </div>
+
+  <script src="js/checkout.js?v=4"></script>
+</body>
+</html>

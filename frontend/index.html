@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DukaanX Store</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+  <!-- Minimalist Top Navigation -->
+  <header class="header-bar">
+    <div class="header-left">
+      <a href="index.html" class="brand-wrapper">
+        <div class="brand-icon-box">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="black">
+            <polygon points="12 2 22 22 2 22"></polygon>
+          </svg>
+        </div>
+        <span class="brand-logo-text">DUKAANX STORE</span>
+      </a>
+
+      <nav class="nav-links-top">
+        <a href="index.html?collection=all" class="active">All</a>
+        <a href="index.html?collection=shirts">Shirts</a>
+        <a href="index.html?collection=stickers">Stickers</a>
+      </nav>
+    </div>
+
+    <div class="search-box-center">
+      <input type="text" id="mainSearchInput" placeholder="Search for products..." />
+      <svg width="16" height="16" viewBox="0 0 24 24">
+        <circle cx="11" cy="11" r="8"></circle>
+        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+      </svg>
+    </div>
+
+    <div class="header-right">
+      <div id="userAuthBox"></div>
+      <button class="cart-toggle-btn" id="openCartBtn">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
+          <line x1="3" y1="6" x2="21" y2="6"></line>
+          <path d="M16 10a4 4 0 0 1-8 0"></path>
+        </svg>
+        <span class="cart-toggle-badge" id="cartBadge">0</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Apple Store Showcase Hero Section -->
+  <section class="apple-store-hero">
+    <div class="store-hero-header">
+      <h1 class="store-hero-title">Store</h1>
+      <div class="store-hero-right">
+        <h2 class="store-hero-tagline">The best way to buy the<br>products you love.</h2>
+        <div class="store-hero-links">
+          <a href="#">Connect with a Specialist ↗</a>
+          <a href="#">Find a DukaanX Store ↗</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Category Ribbon with Left/Right Arrows -->
+    <div class="category-carousel-container">
+      <button class="carousel-arrow arrow-left" id="scrollLeftBtn" aria-label="Scroll left">‹</button>
+      <div class="category-ribbon" id="categoryRibbon"></div>
+      <button class="carousel-arrow arrow-right" id="scrollRightBtn" aria-label="Scroll right">›</button>
+    </div>
+  </section>
+
+  <!-- Storefront Body -->
+  <main class="store-container">
+    <!-- Left Category List Column -->
+    <aside class="sidebar-col">
+      <div class="sidebar-heading">Collections</div>
+      <ul class="sidebar-list" id="collectionList"></ul>
+    </aside>
+
+    <!-- Center Product Grid -->
+    <section class="products-viewport">
+      <div class="products-grid" id="productsGrid"></div>
+    </section>
+
+    <!-- Right Sort Options Column -->
+    <aside class="sidebar-col" style="width: 110px;">
+      <div class="sidebar-heading">Sort by</div>
+      <ul class="sidebar-list">
+        <li><a class="active" data-sort="relevance">Relevance</a></li>
+        <li><a data-sort="trending">Trending</a></li>
+        <li><a data-sort="latest">Latest arrivals</a></li>
+        <li><a data-sort="price-asc">Price: Low to high</a></li>
+        <li><a data-sort="price-desc">Price: High to low</a></li>
+      </ul>
+    </aside>
+  </main>
+
+  <!-- Minimalist Clean Footer -->
+  <footer class="site-footer">
+    <div class="footer-top-row">
+      <a href="index.html" class="footer-brand">
+        <div class="brand-icon-box">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="black">
+            <polygon points="12 2 22 22 2 22"></polygon>
+          </svg>
+        </div>
+        <span class="brand-logo-text">DUKAANX STORE</span>
+      </a>
+
+      <nav class="footer-nav">
+        <a href="index.html">Home</a>
+        <a href="#">About</a>
+        <a href="#">Terms & Conditions</a>
+        <a href="#">Shipping & Return Policy</a>
+        <a href="#">Privacy Policy</a>
+        <a href="#">FAQ</a>
+      </nav>
+    </div>
+
+    <div class="footer-bottom-row">
+      <div class="footer-copyright">
+        <span>&copy; 2026-2030 DUKAANX, Inc. All rights reserved.</span>
+        <span class="footer-divider">|</span>
+        <a href="#" class="footer-bottom-link">View the source</a>
+      </div>
+      <span class="footer-powered-by">Powered by @SACHIN KUMAR</span>
+    </div>
+  </footer>
+
+  <!-- Side Cart Drawer -->
+  <div class="drawer-backdrop" id="drawerBackdrop"></div>
+  <aside class="cart-drawer-sheet" id="cartDrawer">
+    <div class="drawer-header">
+      <h3 style="font-size: 16px;">My Cart</h3>
+      <button id="closeDrawerBtn" style="background:none; border:none; font-size:18px; cursor:pointer;">✕</button>
+    </div>
+    <div class="drawer-content" id="drawerItems"></div>
+    <div class="drawer-footer">
+      <div class="drawer-summary-line">
+        <span>Total</span>
+        <strong id="drawerTotalAmount">₹0 INR</strong>
+      </div>
+      <a href="checkout.html" class="btn-primary-blue">Proceed to Checkout</a>
+    </div>
+  </aside>
+
+  <!-- Profile Drawer / Account Modal -->
+  <div id="accountModalBackdrop" class="modal-backdrop"></div>
+  <div id="accountModal" class="account-modal-sheet">
+    <div class="modal-header">
+      <div class="tabs-nav">
+        <button class="tab-btn active" onclick="switchAccountTab('profile')">Account</button>
+        <button class="tab-btn" onclick="switchAccountTab('addresses')">Addresses</button>
+        <button class="tab-btn" onclick="switchAccountTab('orders')">Past Orders</button>
+      </div>
+      <button id="closeAccountModalBtn" class="close-modal-btn">✕</button>
+    </div>
+
+    <div class="modal-body">
+      <!-- TAB 1: PROFILE INFO & EDIT FORM -->
+      <div id="tab-profile" class="tab-pane active">
+        <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 20px;">
+          <div class="profile-avatar-large" id="profileLargeInitial" style="margin-bottom: 0;">S</div>
+          <div>
+            <h3 id="profDisplayName" style="margin: 0; font-size: 16px; color: #1d1d1f;">User Profile</h3>
+            <span style="font-size: 12px; color: #86868b;">Manage personal details</span>
+          </div>
+        </div>
+
+        <form id="editProfileForm">
+          <div class="field-item">
+            <label>Full Name</label>
+            <input type="text" id="profNameInput" class="input-field" style="margin-top: 4px; padding: 8px 12px; border: 1px solid #d2d2d7; border-radius: 8px; width: 100%; box-sizing: border-box;" required />
+          </div>
+
+          <div class="field-item">
+            <label>Email Address</label>
+            <input type="email" id="profEmailInput" class="input-field" style="margin-top: 4px; padding: 8px 12px; border: 1px solid #d2d2d7; border-radius: 8px; width: 100%; box-sizing: border-box;" required />
+          </div>
+
+          <div class="field-item">
+            <label>Mobile Number</label>
+            <input type="tel" id="profPhoneInput" class="input-field" placeholder="+91 9876543210" style="margin-top: 4px; padding: 8px 12px; border: 1px solid #d2d2d7; border-radius: 8px; width: 100%; box-sizing: border-box;" required />
+          </div>
+
+          <div id="profileMsg" style="display: none; font-size: 12px; padding: 8px 12px; border-radius: 6px; margin-bottom: 12px;"></div>
+
+          <button type="submit" id="saveProfileBtn" class="btn-primary-blue" style="width: 100%; padding: 10px; font-size: 13px; font-weight: 600;">
+            Save Changes
+          </button>
+        </form>
+      </div>
+
+      <!-- TAB 2: ADDRESSES -->
+      <div id="tab-addresses" class="tab-pane">
+        <div id="addressListContainer" class="address-cards-stack"></div>
+        
+        <form id="newAddressForm" class="new-address-form">
+          <h4 style="margin: 0 0 10px; font-size: 13px;">Add New Delivery Address</h4>
+          <input type="text" id="addrTag" placeholder="Tag (e.g. Home, Work)" required />
+          <input type="text" id="addrStreet" placeholder="Street Address / Flat No." required />
+          <div style="display: flex; gap: 8px;">
+            <input type="text" id="addrCity" placeholder="City" required />
+            <input type="text" id="addrZip" placeholder="PIN Code" required />
+          </div>
+          <button type="submit" class="btn-primary-blue" style="padding: 10px; font-size: 13px; margin-top: 6px; width: 100%;">Save Address</button>
+        </form>
+      </div>
+
+      <!-- TAB 3: PAST ORDERS -->
+      <div id="tab-orders" class="tab-pane">
+        <div id="ordersListContainer" class="orders-stack"></div>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/api.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
